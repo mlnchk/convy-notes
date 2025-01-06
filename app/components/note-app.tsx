@@ -1,13 +1,18 @@
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { ChevronLeft, Plus } from "lucide-react";
-import { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, type Note } from "~/lib/db";
 
-export default function NoteApp() {
-  const [selectedNoteId, setSelectedNoteId] = useState<number | null>(null);
+interface NoteAppProps {
+  selectedNoteId: number | null;
+  onNoteSelect: (noteId: number | null) => void;
+}
 
+export default function NoteApp({
+  selectedNoteId,
+  onNoteSelect,
+}: NoteAppProps) {
   // Fetch all notes
   const notes = useLiveQuery(() =>
     db.notes.orderBy("createdAt").reverse().toArray(),
@@ -30,7 +35,9 @@ export default function NoteApp() {
     };
 
     const id = await db.notes.add(newNote);
-    setSelectedNoteId(typeof id === "number" ? id : null);
+    if (typeof id === "number") {
+      onNoteSelect(id);
+    }
   };
 
   // Get current note
@@ -62,7 +69,12 @@ export default function NoteApp() {
         <Card className="w-80 flex flex-col bg-white overflow-hidden">
           <div className="flex items-center justify-between p-4 border-b">
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => onNoteSelect(null)}
+              >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
               <span className="font-medium">Notes</span>
@@ -94,7 +106,7 @@ export default function NoteApp() {
                       ? "bg-muted text-foreground"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
-                  onClick={() => note.id && setSelectedNoteId(note.id)}
+                  onClick={() => note.id && onNoteSelect(note.id)}
                 >
                   <div className="w-full text-left">
                     <div className="font-medium truncate">

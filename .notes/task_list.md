@@ -4,7 +4,7 @@
 
 - [x] Add needed dependencies to project.
 - [x] Implement UI and basic layout.
-- [ ] Implement persisting note into indexedDB.
+- [x] Implement persisting note into indexedDB.
 
 ## Medium Priority
 
