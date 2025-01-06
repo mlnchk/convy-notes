@@ -51,17 +51,14 @@ function NotFoundState({ onBack }: NotFoundStateProps) {
 interface NoteAppProps {
   selectedNoteId: number | null;
   onNoteSelect: (noteId: number | null) => void;
+  notes: Note[];
 }
 
 export default function NoteApp({
   selectedNoteId,
   onNoteSelect,
+  notes,
 }: NoteAppProps) {
-  // Fetch all notes
-  const notes = useLiveQuery(() =>
-    db.notes.orderBy("createdAt").reverse().toArray(),
-  );
-
   // Create a new note
   const handleNewNote = async () => {
     const today = new Date().toLocaleDateString("en-US", {
@@ -151,7 +148,7 @@ export default function NoteApp({
               >
                 New note
               </Button>
-              {notes?.map((note) => (
+              {notes.map((note) => (
                 <Button
                   key={note.id}
                   variant="ghost"
