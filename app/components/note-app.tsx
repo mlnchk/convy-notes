@@ -1,18 +1,59 @@
-import { Button } from "~/components/ui/button"
-import { Card } from "~/components/ui/card"
-import { ChevronLeft, Plus } from 'lucide-react'
-import { useState } from "react"
+import { Button } from "~/components/ui/button";
+import { Card } from "~/components/ui/card";
+import { ChevronLeft, Plus } from "lucide-react";
+import { useState } from "react";
+import { useLiveQuery } from "dexie-react-hooks";
+import { db, type Note } from "~/lib/db";
 
 export default function NoteApp() {
-  const [selectedDate, setSelectedDate] = useState<string | null>(null)
-  
-  const dates = [
-    "10 Jan 2024",
-    "8 Jan 2024",
-    "7 Jan 2024",
-    "5 Jan 2024",
-    "3 Jan 2024"
-  ]
+  const [selectedNoteId, setSelectedNoteId] = useState<number | null>(null);
+
+  // Fetch all notes
+  const notes = useLiveQuery(() =>
+    db.notes.orderBy("createdAt").reverse().toArray(),
+  );
+
+  // Create a new note
+  const handleNewNote = async () => {
+    const today = new Date().toLocaleDateString("en-US", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+
+    const newNote: Note = {
+      title: "",
+      content: "",
+      date: today,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const id = await db.notes.add(newNote);
+    setSelectedNoteId(typeof id === "number" ? id : null);
+  };
+
+  // Get current note
+  const currentNote = useLiveQuery(async () => {
+    if (!selectedNoteId) return null;
+    return db.notes.get(selectedNoteId);
+  }, [selectedNoteId]);
+
+  // Save note changes
+  const handleNoteChange = async (
+    field: "title" | "content",
+    value: string,
+  ) => {
+    if (!selectedNoteId) return;
+
+    const updatedNote = {
+      ...currentNote,
+      [field]: value,
+      updatedAt: new Date(),
+    };
+
+    await db.notes.update(selectedNoteId, updatedNote);
+  };
 
   return (
     <div className="min-h-screen bg-zinc-50 p-4 md:p-8">
@@ -24,9 +65,14 @@ export default function NoteApp() {
               <Button variant="ghost" size="icon" className="h-8 w-8">
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              <span className="font-medium">2024 Jan</span>
+              <span className="font-medium">Notes</span>
             </div>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={handleNewNote}
+            >
               <Plus className="h-4 w-4" />
             </Button>
           </div>
@@ -35,21 +81,29 @@ export default function NoteApp() {
               <Button
                 variant="ghost"
                 className="w-full justify-start text-muted-foreground hover:text-foreground px-4 py-2 h-auto"
+                onClick={handleNewNote}
               >
                 New note
               </Button>
-              {dates.map((date) => (
+              {notes?.map((note) => (
                 <Button
-                  key={date}
+                  key={note.id}
                   variant="ghost"
                   className={`w-full justify-start px-4 py-2 h-auto ${
-                    selectedDate === date
+                    selectedNoteId === note.id
                       ? "bg-muted text-foreground"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
-                  onClick={() => setSelectedDate(date)}
+                  onClick={() => note.id && setSelectedNoteId(note.id)}
                 >
-                  {date}
+                  <div className="w-full text-left">
+                    <div className="font-medium truncate">
+                      {note.title || "Untitled"}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {note.date}
+                    </div>
+                  </div>
                 </Button>
               ))}
             </div>
@@ -62,16 +116,19 @@ export default function NoteApp() {
             <input
               type="text"
               placeholder="Add Title"
+              value={currentNote?.title ?? ""}
+              onChange={(e) => handleNoteChange("title", e.target.value)}
               className="w-full text-4xl font-bold bg-transparent border-none outline-none placeholder:text-muted-foreground/50"
             />
             <textarea
               placeholder="Start your note"
+              value={currentNote?.content ?? ""}
+              onChange={(e) => handleNoteChange("content", e.target.value)}
               className="w-full h-[calc(100vh-16rem)] bg-transparent border-none outline-none resize-none placeholder:text-muted-foreground/50"
             />
           </div>
         </Card>
       </div>
     </div>
-  )
+  );
 }
-
