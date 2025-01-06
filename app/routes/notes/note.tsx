@@ -1,8 +1,9 @@
 import { useNavigate, useParams } from "react-router";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Button } from "~/components/ui/button";
-import { FileText, ChevronLeft, Trash2 } from "lucide-react";
+import { FileText, ChevronLeft, Trash2, Plus } from "lucide-react";
 import { db } from "~/lib/db";
+import { createNote } from "~/lib/notes";
 
 export async function clientLoader({ params }: { params: { noteId: string } }) {
   const note = await db.notes.get(Number(params.noteId));
@@ -25,6 +26,13 @@ export default function Note({
     [noteId],
     initialNote,
   );
+
+  const handleNewNote = async () => {
+    const id = await createNote();
+    if (typeof id === "number") {
+      navigate(`/note/${id}`);
+    }
+  };
 
   // Save note changes
   const handleNoteChange = async (
@@ -62,10 +70,12 @@ export default function Note({
         <p className="text-muted-foreground/80 mb-4 max-w-sm">
           The note you're looking for doesn't exist or has been deleted
         </p>
-        <Button onClick={() => navigate("/")}>
-          <ChevronLeft className="h-4 w-4 mr-2" />
-          Back to Notes
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={handleNewNote}>
+            <Plus className="h-4 w-4 mr-2" />
+            Create New Note
+          </Button>
+        </div>
       </div>
     );
   }

@@ -1,9 +1,17 @@
 import { useNavigate } from "react-router";
 import { Button } from "~/components/ui/button";
 import { FileText, Plus } from "lucide-react";
+import { createNote } from "~/lib/notes";
 
 export default function NotesIndex() {
   const navigate = useNavigate();
+
+  const handleNewNote = async () => {
+    const id = await createNote();
+    if (typeof id === "number") {
+      navigate(`/note/${id}`);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center h-full text-center p-8">
@@ -14,7 +22,7 @@ export default function NotesIndex() {
       <p className="text-muted-foreground/80 mb-4 max-w-sm">
         Select a note from the sidebar or create a new one to get started
       </p>
-      <Button onClick={() => navigate("/note/new")}>
+      <Button onClick={handleNewNote}>
         <Plus className="h-4 w-4 mr-2" />
         Create New Note
       </Button>

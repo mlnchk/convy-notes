@@ -3,15 +3,14 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { ChevronLeft, Plus } from "lucide-react";
-import { getNotes } from "~/lib/notes";
-import { db, type Note } from "~/lib/db";
+import { getNotes, createNote } from "~/lib/notes";
 
 export async function clientLoader() {
   const notes = await getNotes();
   return { notes };
 }
 
-export default function HomeLayout({
+export default function Layout({
   loaderData: { notes: initialNotes },
 }: {
   loaderData: Awaited<ReturnType<typeof clientLoader>>;
@@ -19,23 +18,8 @@ export default function HomeLayout({
   const navigate = useNavigate();
   const notes = useLiveQuery(getNotes, [], initialNotes);
 
-  // Create a new note
   const handleNewNote = async () => {
-    const today = new Date().toLocaleDateString("en-US", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-
-    const newNote: Note = {
-      title: "",
-      content: "",
-      date: today,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    const id = await db.notes.add(newNote);
+    const id = await createNote();
     if (typeof id === "number") {
       navigate(`/note/${id}`);
     }
