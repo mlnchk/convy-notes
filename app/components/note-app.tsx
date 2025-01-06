@@ -1,8 +1,52 @@
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
-import { ChevronLeft, Plus } from "lucide-react";
+import { ChevronLeft, Plus, FileText } from "lucide-react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, type Note } from "~/lib/db";
+
+interface EmptyStateProps {
+  onNewNote: () => void;
+}
+
+function EmptyState({ onNewNote }: EmptyStateProps) {
+  return (
+    <div className="flex flex-col items-center justify-center h-full text-center p-8">
+      <FileText className="h-16 w-16 text-muted-foreground/50 mb-4" />
+      <h2 className="text-2xl font-bold text-muted-foreground mb-2">
+        No Note Selected
+      </h2>
+      <p className="text-muted-foreground/80 mb-4 max-w-sm">
+        Select a note from the sidebar or create a new one to get started
+      </p>
+      <Button onClick={onNewNote}>
+        <Plus className="h-4 w-4 mr-2" />
+        Create New Note
+      </Button>
+    </div>
+  );
+}
+
+interface NotFoundStateProps {
+  onBack: () => void;
+}
+
+function NotFoundState({ onBack }: NotFoundStateProps) {
+  return (
+    <div className="flex flex-col items-center justify-center h-full text-center p-8">
+      <FileText className="h-16 w-16 text-muted-foreground/50 mb-4" />
+      <h2 className="text-2xl font-bold text-muted-foreground mb-2">
+        Note Not Found
+      </h2>
+      <p className="text-muted-foreground/80 mb-4 max-w-sm">
+        The note you're looking for doesn't exist or has been deleted
+      </p>
+      <Button onClick={onBack}>
+        <ChevronLeft className="h-4 w-4 mr-2" />
+        Back to Notes
+      </Button>
+    </div>
+  );
+}
 
 interface NoteAppProps {
   selectedNoteId: number | null;
@@ -124,21 +168,27 @@ export default function NoteApp({
 
         {/* Main Content Card */}
         <Card className="flex-1 bg-white p-8">
-          <div className="max-w-2xl mx-auto space-y-4">
-            <input
-              type="text"
-              placeholder="Add Title"
-              value={currentNote?.title ?? ""}
-              onChange={(e) => handleNoteChange("title", e.target.value)}
-              className="w-full text-4xl font-bold bg-transparent border-none outline-none placeholder:text-muted-foreground/50"
-            />
-            <textarea
-              placeholder="Start your note"
-              value={currentNote?.content ?? ""}
-              onChange={(e) => handleNoteChange("content", e.target.value)}
-              className="w-full h-[calc(100vh-16rem)] bg-transparent border-none outline-none resize-none placeholder:text-muted-foreground/50"
-            />
-          </div>
+          {!selectedNoteId ? (
+            <EmptyState onNewNote={handleNewNote} />
+          ) : !currentNote ? (
+            <NotFoundState onBack={() => onNoteSelect(null)} />
+          ) : (
+            <div className="max-w-2xl mx-auto space-y-4">
+              <input
+                type="text"
+                placeholder="Add Title"
+                value={currentNote.title}
+                onChange={(e) => handleNoteChange("title", e.target.value)}
+                className="w-full text-4xl font-bold bg-transparent border-none outline-none placeholder:text-muted-foreground/50"
+              />
+              <textarea
+                placeholder="Start your note"
+                value={currentNote.content}
+                onChange={(e) => handleNoteChange("content", e.target.value)}
+                className="w-full h-[calc(100vh-16rem)] bg-transparent border-none outline-none resize-none placeholder:text-muted-foreground/50"
+              />
+            </div>
+          )}
         </Card>
       </div>
     </div>
