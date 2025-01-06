@@ -1,6 +1,6 @@
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
-import { ChevronLeft, Plus, FileText } from "lucide-react";
+import { ChevronLeft, Plus, FileText, Trash2 } from "lucide-react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, type Note } from "~/lib/db";
 
@@ -106,6 +106,16 @@ export default function NoteApp({
     await db.notes.update(selectedNoteId, updatedNote);
   };
 
+  // Delete note
+  const handleDeleteNote = async () => {
+    if (!selectedNoteId) return;
+
+    if (window.confirm("Are you sure you want to delete this note?")) {
+      await db.notes.delete(selectedNoteId);
+      onNoteSelect(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-zinc-50 p-4 md:p-8">
       <div className="flex gap-4 md:gap-8 h-[calc(100vh-4rem)]">
@@ -173,14 +183,24 @@ export default function NoteApp({
           ) : !currentNote ? (
             <NotFoundState onBack={() => onNoteSelect(null)} />
           ) : (
-            <div className="max-w-2xl mx-auto space-y-4">
-              <input
-                type="text"
-                placeholder="Add Title"
-                value={currentNote.title}
-                onChange={(e) => handleNoteChange("title", e.target.value)}
-                className="w-full text-4xl font-bold bg-transparent border-none outline-none placeholder:text-muted-foreground/50"
-              />
+            <div className="max-w-2xl mx-auto">
+              <div className="flex items-center justify-between mb-4">
+                <input
+                  type="text"
+                  placeholder="Add Title"
+                  value={currentNote.title}
+                  onChange={(e) => handleNoteChange("title", e.target.value)}
+                  className="text-4xl font-bold bg-transparent border-none outline-none placeholder:text-muted-foreground/50"
+                />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                  onClick={handleDeleteNote}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
               <textarea
                 placeholder="Start your note"
                 value={currentNote.content}
