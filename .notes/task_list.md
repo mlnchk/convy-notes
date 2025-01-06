@@ -2,8 +2,8 @@
 
 ## High Priority
 
-- [ ] Add needed dependencies to project.
-- [ ] Implement UI and basic layout.
+- [x] Add needed dependencies to project.
+- [x] Implement UI and basic layout.
 - [ ] Implement persisting note into indexedDB.
 
 ## Medium Priority
