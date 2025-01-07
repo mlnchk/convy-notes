@@ -14,8 +14,11 @@
 
 ## Low Priority
 
-- [ ] Implement note search.
+- [x] Implement note search.
 - [x] Implement note sharing.
+- [ ] Add keyboard navigation.
+- [ ] Add keyboard shortcuts.
+- [ ] Group notes by date.
 - [ ] PWA support.
 - [ ] Raycast integration with note creation and note search.
 
@@ -26,3 +29,4 @@
 - Implemented persisting note into indexedDB
 - Added empty states for no note selected and note not found
 - Implemented note creation, editing, and deletion
+- Implemented note search with real-time filtering

@@ -1,8 +1,9 @@
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
-import { ChevronLeft, Plus, FileText, Trash2 } from "lucide-react";
+import { ChevronLeft, Plus, FileText, Trash2, Search } from "lucide-react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, type Note } from "~/lib/db";
+import { useState } from "react";
 
 interface EmptyStateProps {
   onNewNote: () => void;
@@ -59,6 +60,17 @@ export default function NoteApp({
   onNoteSelect,
   notes,
 }: NoteAppProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Filter notes based on search query
+  const filteredNotes = notes.filter((note) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      note.title.toLowerCase().includes(query) ||
+      note.content.toLowerCase().includes(query)
+    );
+  });
+
   // Create a new note
   const handleNewNote = async () => {
     const today = new Date().toLocaleDateString("en-US", {
@@ -141,6 +153,17 @@ export default function NoteApp({
           </div>
           <div className="flex-1 overflow-auto">
             <div className="p-2">
+              {/* Search Input */}
+              <div className="relative mb-2">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="Search notes..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 text-sm bg-muted rounded-md outline-none focus:ring-2 focus:ring-ring"
+                />
+              </div>
               <Button
                 variant="ghost"
                 className="w-full justify-start text-muted-foreground hover:text-foreground px-4 py-2 h-auto"
@@ -148,7 +171,7 @@ export default function NoteApp({
               >
                 New note
               </Button>
-              {notes.map((note) => (
+              {filteredNotes.map((note) => (
                 <Button
                   key={note.id}
                   variant="ghost"

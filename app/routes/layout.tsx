@@ -2,8 +2,9 @@ import { NavLink, Outlet, useNavigate } from "react-router";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
-import { ChevronLeft, Plus } from "lucide-react";
+import { ChevronLeft, Plus, Search } from "lucide-react";
 import { getNotes, createNote } from "~/lib/notes";
+import { useState } from "react";
 
 export async function clientLoader() {
   const notes = await getNotes();
@@ -17,6 +18,15 @@ export default function Layout({
 }) {
   const navigate = useNavigate();
   const notes = useLiveQuery(getNotes, [], initialNotes);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredNotes = notes?.filter((note) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      note.title.toLowerCase().includes(query) ||
+      note.content.toLowerCase().includes(query)
+    );
+  });
 
   const handleNewNote = async () => {
     const id = await createNote();
@@ -52,7 +62,18 @@ export default function Layout({
             </Button>
           </div>
           <div className="flex-1 overflow-auto p-2">
-            {notes?.map((note) => (
+            {/* Search Input */}
+            <div className="relative mb-2">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search notes..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 text-sm bg-muted rounded-md outline-none focus:ring-2 focus:ring-ring"
+              />
+            </div>
+            {filteredNotes?.map((note) => (
               <NavLink
                 key={note.id}
                 to={`/note/${note.id}`}
