@@ -16,6 +16,8 @@
 
 - [ ] Implement note search.
 - [ ] Implement note sharing.
+- [ ] PWA support.
+- [ ] Raycast integration with note creation and note search.
 
 ## Completed
 
