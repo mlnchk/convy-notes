@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router";
+import { NavLink, Outlet, useNavigate } from "react-router";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -51,33 +51,23 @@ export default function Layout({
               <Plus className="h-4 w-4" />
             </Button>
           </div>
-          <div className="flex-1 overflow-auto">
-            <div className="p-2">
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-muted-foreground hover:text-foreground px-4 py-2 h-auto"
-                onClick={handleNewNote}
+          <div className="flex-1 overflow-auto p-2">
+            {notes?.map((note) => (
+              <NavLink
+                key={note.id}
+                to={`/note/${note.id}`}
+                className="block w-full justify-start px-4 py-2 h-auto text-muted-foreground hover:text-foreground aria-[current=page]:text-foreground aria-[current=page]:bg-muted transition-colors hover:bg-muted rounded-md"
               >
-                New note
-              </Button>
-              {notes?.map((note) => (
-                <Button
-                  key={note.id}
-                  variant="ghost"
-                  className="w-full justify-start px-4 py-2 h-auto text-muted-foreground hover:text-foreground"
-                  onClick={() => note.id && navigate(`/note/${note.id}`)}
-                >
-                  <div className="w-full text-left">
-                    <div className="font-medium truncate">
-                      {note.title || "Untitled"}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {note.date}
-                    </div>
+                <div className="w-full text-left">
+                  <div className="font-medium truncate">
+                    {note.title || "Untitled"}
                   </div>
-                </Button>
-              ))}
-            </div>
+                  <div className="text-xs text-muted-foreground">
+                    {note.date}
+                  </div>
+                </div>
+              </NavLink>
+            ))}
           </div>
         </Card>
 
