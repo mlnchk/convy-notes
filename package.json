@@ -12,6 +12,10 @@
     "@radix-ui/react-slot": "^1.1.1",
     "@react-router/node": "^7.1.1",
     "@react-router/serve": "^7.1.1",
+    "@tiptap/extension-placeholder": "^2.11.0",
+    "@tiptap/pm": "^2.11.0",
+    "@tiptap/react": "^2.11.0",
+    "@tiptap/starter-kit": "^2.11.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dexie": "^4.0.10",
@@ -26,6 +30,7 @@
   },
   "devDependencies": {
     "@react-router/dev": "^7.1.1",
+    "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^20",
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.1",

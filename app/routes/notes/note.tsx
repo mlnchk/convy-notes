@@ -1,9 +1,11 @@
 import { useNavigate, useParams } from "react-router";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Button } from "~/components/ui/button";
-import { FileText, ChevronLeft, Trash2, Plus } from "lucide-react";
+import { FileText, Trash2, Plus } from "lucide-react";
 import { db } from "~/lib/db";
 import { createNote } from "~/lib/notes";
+import { RichTextEditor } from "~/components/rich-text-editor";
+import { useState } from "react";
 
 export async function clientLoader({ params }: { params: { noteId: string } }) {
   const note = await db.notes.get(Number(params.noteId));
@@ -81,7 +83,7 @@ export default function Note({
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <input
           type="text"
@@ -99,11 +101,11 @@ export default function Note({
           <Trash2 className="h-4 w-4" />
         </Button>
       </div>
-      <textarea
-        placeholder="Start your note"
-        value={currentNote.content}
-        onChange={(e) => handleNoteChange("content", e.target.value)}
-        className="w-full h-[calc(100vh-16rem)] bg-transparent border-none outline-none resize-none placeholder:text-muted-foreground/50"
+      <RichTextEditor
+        key={currentNote.id}
+        content={currentNote.content}
+        onChange={(value) => handleNoteChange("content", value)}
+        className="flex-1"
       />
     </div>
   );
