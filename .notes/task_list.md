@@ -15,7 +15,7 @@
 ## Low Priority
 
 - [ ] Implement note search.
-- [ ] Implement note sharing.
+- [x] Implement note sharing.
 - [ ] PWA support.
 - [ ] Raycast integration with note creation and note search.
 

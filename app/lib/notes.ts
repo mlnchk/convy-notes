@@ -4,7 +4,12 @@ export async function getNotes() {
   return db.notes.orderBy("createdAt").reverse().toArray();
 }
 
-export async function createNote() {
+interface CreateNoteData {
+  title?: string;
+  content?: string;
+}
+
+export async function createNote(data?: CreateNoteData) {
   const today = new Date().toLocaleDateString("en-US", {
     day: "2-digit",
     month: "short",
@@ -12,8 +17,8 @@ export async function createNote() {
   });
 
   const newNote = {
-    title: "",
-    content: "",
+    title: data?.title ?? "",
+    content: data?.content ?? "",
     date: today,
     createdAt: new Date(),
     updatedAt: new Date(),

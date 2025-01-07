@@ -1,10 +1,11 @@
 import { useNavigate, useParams } from "react-router";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Button } from "~/components/ui/button";
-import { FileText, Trash2, Plus } from "lucide-react";
+import { FileText, Trash2, Plus, Share2 } from "lucide-react";
 import { db } from "~/lib/db";
 import { createNote } from "~/lib/notes";
 import { RichTextEditor } from "~/components/rich-text-editor";
+import { encodeNote, createShareUrl } from "~/lib/sharing";
 import { useState } from "react";
 
 export async function clientLoader({ params }: { params: { noteId: string } }) {
@@ -62,6 +63,22 @@ export default function Note({
     }
   };
 
+  const handleShareNote = () => {
+    if (!currentNote) return;
+
+    const noteData = {
+      title: currentNote.title,
+      content: currentNote.content,
+    };
+
+    const encodedNote = encodeNote(noteData);
+    const shareUrl = createShareUrl(encodedNote);
+
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      alert("Share link copied to clipboard!");
+    });
+  };
+
   if (!currentNote) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-8">
@@ -92,14 +109,24 @@ export default function Note({
           onChange={(e) => handleNoteChange("title", e.target.value)}
           className="text-4xl font-bold bg-transparent border-none outline-none placeholder:text-muted-foreground/50"
         />
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-muted-foreground hover:text-destructive"
-          onClick={handleDeleteNote}
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-muted-foreground hover:text-primary"
+            onClick={handleShareNote}
+          >
+            <Share2 className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-muted-foreground hover:text-destructive"
+            onClick={handleDeleteNote}
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
       <RichTextEditor
         key={currentNote.id}

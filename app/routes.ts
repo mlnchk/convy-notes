@@ -10,4 +10,5 @@ export default [
     index("./routes/notes/index.tsx"),
     route("note/:noteId", "./routes/notes/note.tsx"),
   ]),
+  route("shared/:encodedNote", "./routes/shared.tsx"),
 ] satisfies RouteConfig;
