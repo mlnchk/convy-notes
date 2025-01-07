@@ -39,7 +39,7 @@ export default function Layout({
     <div className="min-h-screen bg-zinc-50 p-4 md:p-8">
       <div className="flex gap-4 md:gap-8 h-[calc(100vh-4rem)]">
         {/* Left Sidebar Card */}
-        <Card className="w-80 flex flex-col bg-white overflow-hidden">
+        <Card className="w-80 flex flex-col bg-white overflow-y-auto">
           <div className="flex items-center justify-between p-4 border-b">
             <div className="flex items-center gap-2">
               <Button
@@ -93,7 +93,7 @@ export default function Layout({
         </Card>
 
         {/* Main Content Card */}
-        <Card className="flex-1 bg-white p-8">
+        <Card className="flex-1 bg-white p-8 overflow-y-auto">
           <Outlet />
         </Card>
       </div>
