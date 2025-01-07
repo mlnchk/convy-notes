@@ -21,6 +21,7 @@
 - [ ] Group notes by date.
 - [ ] PWA support.
 - [ ] Raycast integration with note creation and note search.
+- [ ] Make note content in sync between tabs.
 
 ## Completed
 
