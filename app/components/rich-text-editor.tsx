@@ -28,6 +28,10 @@ export function RichTextEditor({
           "prose lg:prose-lg xl:prose-xl focus:outline-none max-w-none h-full",
       },
     },
+    onFocus: () => {
+      /* Handling multiple tabs situation */
+      editor?.commands.setContent(content);
+    },
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       onChange?.(html);
