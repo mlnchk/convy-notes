@@ -5,6 +5,7 @@ import { Card } from "~/components/ui/card";
 import { ChevronLeft, Plus, Search } from "lucide-react";
 import { getNotes, createNote } from "~/lib/notes";
 import { useState } from "react";
+import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 
 export async function clientLoader() {
   const notes = await getNotes();
@@ -73,22 +74,32 @@ export default function Layout({
                 className="w-full pl-9 pr-4 py-2 text-sm bg-muted rounded-md outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
-            {filteredNotes?.map((note) => (
-              <NavLink
-                key={note.id}
-                to={`/note/${note.id}`}
-                className="block w-full justify-start px-4 py-2 h-auto text-muted-foreground hover:text-foreground aria-[current=page]:text-foreground aria-[current=page]:bg-muted transition-colors hover:bg-muted rounded-md"
-              >
-                <div className="w-full text-left">
-                  <div className="font-medium truncate">
-                    {note.title || "Untitled"}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {note.date}
-                  </div>
-                </div>
-              </NavLink>
-            ))}
+            <NavigationMenu.Root
+              orientation="vertical"
+              className="flex flex-col gap-0.5"
+            >
+              <NavigationMenu.List>
+                {filteredNotes?.map((note) => (
+                  <NavigationMenu.Item>
+                    <NavigationMenu.Link asChild>
+                      <NavLink
+                        to={`/note/${note.id}`}
+                        className="block w-full justify-start px-4 py-2 h-auto text-muted-foreground hover:text-foreground aria-[current=page]:text-foreground aria-[current=page]:bg-muted transition-colors hover:bg-muted rounded-md"
+                      >
+                        <div className="w-full text-left">
+                          <div className="font-medium truncate">
+                            {note.title || "Untitled"}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {note.date}
+                          </div>
+                        </div>
+                      </NavLink>
+                    </NavigationMenu.Link>
+                  </NavigationMenu.Item>
+                ))}
+              </NavigationMenu.List>
+            </NavigationMenu.Root>
           </div>
         </Card>
 
