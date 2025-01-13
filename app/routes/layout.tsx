@@ -80,7 +80,7 @@ export default function Layout({
             >
               <NavigationMenu.List>
                 {filteredNotes?.map((note) => (
-                  <NavigationMenu.Item>
+                  <NavigationMenu.Item key={note.id}>
                     <NavigationMenu.Link asChild>
                       <NavLink
                         to={`/note/${note.id}`}
