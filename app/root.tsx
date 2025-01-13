@@ -24,6 +24,9 @@ export const links: Route.LinksFunction = () => [
   },
   { rel: "stylesheet", href: stylesheet },
   { rel: "stylesheet", href: fontStyles },
+  { rel: "icon", type: "image/png", href: "/pwa-192x192.png" },
+  { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+  { rel: "manifest", href: "/manifest.webmanifest" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -32,6 +35,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta
+          name="description"
+          content="A modern note-taking app that works offline"
+        />
         <Meta />
         <Links />
       </head>

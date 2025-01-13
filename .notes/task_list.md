@@ -19,7 +19,7 @@
 - [x] Add keyboard navigation.
 - [ ] Add keyboard shortcuts.
 - [x] Group notes by date.
-- [ ] PWA support.
+- [x] PWA support.
 - [ ] Raycast integration with note creation and note search.
 - [x] Make note content in sync between tabs.
 
@@ -32,3 +32,4 @@
 - Implemented note creation, editing, and deletion
 - Implemented note search with real-time filtering
 - Implemented note grouping by date with Today, Yesterday, and older dates categories
+- Added PWA support with offline functionality
