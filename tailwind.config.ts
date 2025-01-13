@@ -7,14 +7,15 @@ export default {
     extend: {
       fontFamily: {
         sans: [
-          'Inter"',
+          '"Euclid Circular A"',
+          "Inter",
           "ui-sans-serif",
           "system-ui",
           "sans-serif",
-          'Apple Color Emoji"',
-          'Segoe UI Emoji"',
-          'Segoe UI Symbol"',
-          'Noto Color Emoji"',
+          '"Apple Color Emoji"',
+          '"Segoe UI Emoji"',
+          '"Segoe UI Symbol"',
+          '"Noto Color Emoji"',
         ],
       },
       borderRadius: {
