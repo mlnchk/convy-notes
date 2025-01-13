@@ -1,10 +1,10 @@
 import Dexie, { type Table } from "dexie";
 
 export interface Note {
-  id?: number;
+  id: number;
   title: string;
   content: string;
-  date: string;
+  date: string; // TODO: remove this
   createdAt: Date;
   updatedAt: Date;
 }

@@ -16,12 +16,12 @@
 
 - [x] Implement note search.
 - [x] Implement note sharing.
-- [ ] Add keyboard navigation.
+- [x] Add keyboard navigation.
 - [ ] Add keyboard shortcuts.
-- [ ] Group notes by date.
+- [x] Group notes by date.
 - [ ] PWA support.
 - [ ] Raycast integration with note creation and note search.
-- [ ] Make note content in sync between tabs.
+- [x] Make note content in sync between tabs.
 
 ## Completed
 
@@ -31,3 +31,4 @@
 - Added empty states for no note selected and note not found
 - Implemented note creation, editing, and deletion
 - Implemented note search with real-time filtering
+- Implemented note grouping by date with Today, Yesterday, and older dates categories

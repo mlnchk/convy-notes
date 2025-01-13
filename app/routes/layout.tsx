@@ -4,13 +4,23 @@ import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { ChevronLeft, Plus, Search } from "lucide-react";
 import { getNotes, createNote } from "~/lib/notes";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
+import { isToday, isYesterday, format } from "date-fns";
+import { pipe, groupBy, mapValues } from "remeda";
 
 export async function clientLoader() {
   const notes = await getNotes();
   return { notes };
 }
+
+const getDateGroupKey = (date: Date): string => {
+  console.log(date);
+  if (isToday(date)) return "Today";
+  if (isYesterday(date)) return "Yesterday";
+
+  return format(date, "MMMM d, yyyy");
+};
 
 export default function Layout({
   loaderData: { notes: initialNotes },
@@ -21,13 +31,33 @@ export default function Layout({
   const notes = useLiveQuery(getNotes, [], initialNotes);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredNotes = notes?.filter((note) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      note.title.toLowerCase().includes(query) ||
-      note.content.toLowerCase().includes(query)
+  const filteredNotes = useMemo(() => {
+    if (!notes) return [];
+
+    return notes.filter((note) => {
+      if (!note.id) return false;
+
+      const query = searchQuery.toLowerCase();
+      return (
+        note.title.toLowerCase().includes(query) ||
+        note.content.toLowerCase().includes(query)
+      );
+    });
+  }, [notes, searchQuery]);
+
+  const sortedNotes = useMemo(() => {
+    if (!filteredNotes.length) return [];
+
+    return filteredNotes.sort(
+      (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
     );
-  });
+  }, [filteredNotes]);
+
+  const groupedNotes = useMemo(() => {
+    if (!sortedNotes.length) return {};
+
+    return groupBy(sortedNotes, (note) => getDateGroupKey(note.createdAt));
+  }, [sortedNotes]);
 
   const handleNewNote = async () => {
     const id = await createNote();
@@ -78,25 +108,34 @@ export default function Layout({
               orientation="vertical"
               className="flex flex-col gap-0.5"
             >
-              <NavigationMenu.List>
-                {filteredNotes?.map((note) => (
-                  <NavigationMenu.Item key={note.id}>
-                    <NavigationMenu.Link asChild>
-                      <NavLink
-                        to={`/note/${note.id}`}
-                        className="block w-full justify-start px-4 py-2 h-auto text-muted-foreground hover:text-foreground aria-[current=page]:text-foreground aria-[current=page]:bg-muted transition-colors hover:bg-muted rounded-md"
-                      >
-                        <div className="w-full text-left">
-                          <div className="font-medium truncate">
-                            {note.title || "Untitled"}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            {note.date}
-                          </div>
-                        </div>
-                      </NavLink>
-                    </NavigationMenu.Link>
-                  </NavigationMenu.Item>
+              <NavigationMenu.List className="flex flex-col gap-4">
+                {Object.entries(groupedNotes).map(([date, notes]) => (
+                  <div key={date}>
+                    <div className="px-4 py-1 text-xs font-medium text-muted-foreground">
+                      {date}
+                    </div>
+                    <div className="flex flex-col gap-0.5 mt-1">
+                      {notes.map((note) => (
+                        <NavigationMenu.Item key={note.id}>
+                          <NavigationMenu.Link asChild>
+                            <NavLink
+                              to={`/note/${note.id}`}
+                              className="block w-full justify-start px-4 py-2 h-auto text-muted-foreground hover:text-foreground aria-[current=page]:text-foreground aria-[current=page]:bg-muted transition-colors hover:bg-muted rounded-md"
+                            >
+                              <div className="w-full text-left">
+                                <div className="font-medium truncate">
+                                  {note.title || "Untitled"}
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {format(note.createdAt, "h:mm a")}
+                                </div>
+                              </div>
+                            </NavLink>
+                          </NavigationMenu.Link>
+                        </NavigationMenu.Item>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </NavigationMenu.List>
             </NavigationMenu.Root>
