@@ -64,6 +64,7 @@ export default function SharedNote() {
         </Button>
       </div>
       <RichTextEditor
+        editable={false}
         content={decodedNote.content}
         onChange={() => {}}
         className="flex-1 [&_.ProseMirror]:pointer-events-none"

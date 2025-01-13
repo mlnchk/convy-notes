@@ -4,14 +4,16 @@ import Placeholder from "@tiptap/extension-placeholder";
 
 interface RichTextEditorProps {
   content: string;
-  onChange?: (content: string) => void;
   className?: string;
+  editable?: boolean;
+  onChange?: (content: string) => void;
 }
 
 export function RichTextEditor({
   content,
-  onChange,
+  editable = true,
   className,
+  onChange,
 }: RichTextEditorProps) {
   const editor = useEditor({
     extensions: [
@@ -28,6 +30,7 @@ export function RichTextEditor({
           "prose lg:prose-lg xl:prose-xl focus:outline-none max-w-none h-full",
       },
     },
+    editable,
     onFocus: () => {
       /* Handling multiple tabs situation */
       editor?.commands.setContent(content);
