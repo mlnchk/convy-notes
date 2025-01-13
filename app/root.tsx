@@ -26,7 +26,7 @@ export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: fontStyles },
   { rel: "icon", type: "image/png", href: "/pwa-192x192.png" },
   { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
-  { rel: "manifest", href: "/manifest.webmanifest" },
+  { rel: "manifest", href: "/manifest.json" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
