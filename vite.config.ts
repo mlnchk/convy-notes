@@ -16,10 +16,10 @@ export default defineConfig({
     reactRouter(),
     tsconfigPaths(),
     VitePWA({
-      injectRegister: "auto",
+      injectRegister: "script",
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
-      manifestFilename: "manifest.json",
+      base: "/",
+      // includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
       manifest: {
         name: "Convy Notes",
         short_name: "Convy",
@@ -44,96 +44,22 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}", "manifest.json"],
-        // Don't fallback to offline page since we're a SPA
+        // Cache all static assets during build
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
         navigateFallback: null,
+        navigateFallbackAllowlist: [/^\/note\//],
+        skipWaiting: true,
+        clientsClaim: true,
         runtimeCaching: [
           {
-            // Cache all navigation requests (HTML)
+            // Cache all navigation requests (HTML) including note pages
             urlPattern: ({ request }) => request.mode === "navigate",
             handler: "NetworkFirst",
-            options: {
-              cacheName: "navigation-cache",
-              expiration: {
-                maxEntries: 32,
-                maxAgeSeconds: 24 * 60 * 60, // 24 hours
-              },
-            },
           },
           {
-            // Cache all note pages
-            urlPattern: ({ url }) => url.pathname.startsWith("/note/"),
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "notes-cache",
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
-              },
-            },
-          },
-          {
-            // Cache shared notes
-            urlPattern: ({ url }) => url.pathname.startsWith("/shared/"),
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "shared-notes-cache",
-              expiration: {
-                maxEntries: 20,
-                maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
-              },
-            },
-          },
-          {
-            // Cache static assets
-            urlPattern: /\.(js|css|woff2?)$/i,
+            // Cache all static assets
+            urlPattern: /\.(js|css|woff2?|png|svg|jpg|jpeg|gif|ico)$/i,
             handler: "CacheFirst",
-            options: {
-              cacheName: "assets-cache",
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
-              },
-            },
-          },
-          {
-            // Cache images
-            urlPattern: /\.(png|svg|jpg|jpeg|gif|ico)$/i,
-            handler: "CacheFirst",
-            options: {
-              cacheName: "images-cache",
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
-              },
-            },
-          },
-          {
-            // Cache Google Fonts stylesheets
-            urlPattern: /^https:\/\/fonts\.googleapis\.com/,
-            handler: "StaleWhileRevalidate",
-            options: {
-              cacheName: "google-fonts-stylesheets",
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
-              },
-            },
-          },
-          {
-            // Cache Google Fonts webfonts
-            urlPattern: /^https:\/\/fonts\.gstatic\.com/,
-            handler: "CacheFirst",
-            options: {
-              cacheName: "google-fonts-webfonts",
-              expiration: {
-                maxEntries: 20,
-                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
           },
         ],
       },

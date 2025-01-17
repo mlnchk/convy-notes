@@ -26,7 +26,7 @@ export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: fontStyles },
   { rel: "icon", type: "image/png", href: "/pwa-192x192.png" },
   { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
-  { rel: "manifest", href: "/manifest.json" },
+  { rel: "manifest", href: "/manifest.webmanifest" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -42,6 +42,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         />
         <Meta />
         <Links />
+        <script src="/registerSW.js"></script>
       </head>
       <body>
         {children}
