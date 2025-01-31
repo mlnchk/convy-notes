@@ -82,11 +82,11 @@ export default function Note({
   if (!currentNote) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-8">
-        <FileText className="h-16 w-16 text-muted-foreground/50 mb-4" />
-        <h2 className="text-2xl font-bold text-muted-foreground mb-2">
+        <FileText className="h-16 w-16 text-content-primary/50 mb-4" />
+        <h2 className="text-2xl font-bold text-content-primary mb-2">
           Note Not Found
         </h2>
-        <p className="text-muted-foreground/80 mb-4 max-w-sm">
+        <p className="text-content-primary/80 mb-4 max-w-sm">
           The note you're looking for doesn't exist or has been deleted
         </p>
         <div className="flex gap-2">
@@ -100,20 +100,20 @@ export default function Note({
   }
 
   return (
-    <div className="max-w-2xl mx-auto h-full flex flex-col">
+    <div className="max-w-2xl py-20 px-5 mx-auto flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <input
           type="text"
           placeholder="Add Title"
           value={currentNote.title}
           onChange={(e) => handleNoteChange("title", e.target.value)}
-          className="text-4xl font-bold bg-transparent border-none outline-none placeholder:text-muted-foreground/50"
+          className="text-4xl font-bold bg-transparent border-none outline-none placeholder:text-on-surface-primary"
         />
         <div className="flex gap-2">
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-primary"
+            className="h-8 w-8 text-content-primary hover:text-primary"
             onClick={handleShareNote}
           >
             <Share2 className="h-4 w-4" />
@@ -121,7 +121,7 @@ export default function Note({
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-destructive"
+            className="h-8 w-8 text-content-primary hover:text-destructive"
             onClick={handleDeleteNote}
           >
             <Trash2 className="h-4 w-4" />

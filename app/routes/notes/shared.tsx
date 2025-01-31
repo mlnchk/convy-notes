@@ -13,11 +13,11 @@ export default function SharedNote() {
   if (!encodedNote) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-8">
-        <FileText className="h-16 w-16 text-muted-foreground/50 mb-4" />
-        <h2 className="text-2xl font-bold text-muted-foreground mb-2">
+        <FileText className="h-16 w-16 text-content-primary/50 mb-4" />
+        <h2 className="text-2xl font-bold text-content-primary mb-2">
           Note Not Found
         </h2>
-        <p className="text-muted-foreground/80 mb-4 max-w-sm">
+        <p className="text-content-primary/80 mb-4 max-w-sm">
           The shared note link appears to be invalid
         </p>
       </div>
@@ -30,11 +30,11 @@ export default function SharedNote() {
   } catch (error) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-8">
-        <FileText className="h-16 w-16 text-muted-foreground/50 mb-4" />
-        <h2 className="text-2xl font-bold text-muted-foreground mb-2">
+        <FileText className="h-16 w-16 text-content-primary/50 mb-4" />
+        <h2 className="text-2xl font-bold text-content-primary mb-2">
           Invalid Note Data
         </h2>
-        <p className="text-muted-foreground/80 mb-4 max-w-sm">
+        <p className="text-content-primary/80 mb-4 max-w-sm">
           The shared note data appears to be corrupted
         </p>
       </div>

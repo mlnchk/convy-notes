@@ -15,11 +15,11 @@ export default function NotesIndex() {
 
   return (
     <div className="flex flex-col items-center justify-center h-full text-center p-8">
-      <FileText className="h-16 w-16 text-muted-foreground/50 mb-4" />
-      <h2 className="text-2xl font-bold text-muted-foreground mb-2">
+      <FileText className="h-16 w-16 text-content-primary/50 mb-4" />
+      <h2 className="text-2xl font-bold text-content-primary mb-2">
         No Note Selected
       </h2>
-      <p className="text-muted-foreground/80 mb-4 max-w-sm">
+      <p className="text-content-primary/80 mb-4 max-w-sm">
         Select a note from the sidebar or create a new one to get started
       </p>
       <Button onClick={handleNewNote}>

@@ -6,9 +6,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: [
+        default: [
           '"Euclid Circular A"',
-          "Inter",
           "ui-sans-serif",
           "system-ui",
           "sans-serif",
@@ -18,52 +17,51 @@ export default {
           '"Noto Color Emoji"',
         ],
       },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
-      },
       colors: {
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+        current: "currentColor",
+        transparent: "transparent",
+
+        "accent-primary": "var(--accent-primary)",
+        "accent-secondary": "var(--accent-secondary)",
+        "content-primary": "var(--content-primary)",
+        "content-secondary": "var(--content-secondary)",
+        "on-surface-primary": "var(--on-surface-primary)",
+        "on-surface-secondary": "var(--on-surface-secondary)",
+        surface: "var(--surface)",
+        background: "var(--background)",
+
+        white: "#FFF",
+        black: "#000",
+        green: "#20C5A0",
+        red: {
+          DEFAULT: "#FF6059",
+          bright: "#FF3333",
         },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        chart: {
-          "1": "hsl(var(--chart-1))",
-          "2": "hsl(var(--chart-2))",
-          "3": "hsl(var(--chart-3))",
-          "4": "hsl(var(--chart-4))",
-          "5": "hsl(var(--chart-5))",
-        },
+      },
+      fontSize: {
+        header: ["2rem", "2.5rem"],
+        header2: ["1.25rem", "1.75rem"],
+        body2: ["1rem", "1.5rem"],
+        body: ["0.875rem", "1.25rem"],
+        caption: ["0.75rem", "1rem"],
+        caption2: ["0.625rem", "0.75rem"],
+      },
+      borderRadius: {
+        none: "0",
+        xs: "0.25rem",
+        sm: "0.5rem",
+        md: "0.75rem",
+        lg: "1rem",
+        full: "9999px",
+      },
+      boxShadow: {
+        modal: "var(--shadow-modal)",
+        popup: "var(--shadow-popup)",
+      },
+      screens: {
+        sm: "320px",
+        md: "588px",
+        lg: "960px",
       },
     },
   },
