@@ -3,21 +3,20 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "cross-env NODE_ENV=production react-router build",
-    "dev": "react-router dev",
+    "build": "vite build",
+    "dev": "vite",
     "preview": "vite preview",
-    "typecheck": "react-router typegen && tsc",
     "generate-pwa-assets": "node scripts/generate-pwa-assets.js"
   },
   "dependencies": {
     "@radix-ui/react-navigation-menu": "^1.2.3",
     "@radix-ui/react-slot": "^1.1.1",
-    "@react-router/node": "^7.1.1",
-    "@react-router/serve": "^7.1.1",
+    "@tanstack/react-router": "^1.98.4",
     "@tiptap/extension-placeholder": "^2.11.0",
     "@tiptap/pm": "^2.11.0",
     "@tiptap/react": "^2.11.0",
     "@tiptap/starter-kit": "^2.11.0",
+    "@vitejs/plugin-react": "^4.3.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
@@ -28,7 +27,6 @@
     "lz-string": "^1.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router": "^7.1.1",
     "remeda": "^2.19.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7"

@@ -1,33 +1,43 @@
-import { NavLink, Outlet, useNavigate } from "react-router";
+import {
+  createRoute,
+  Link,
+  Outlet,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
-import { ChevronLeft, Plus, Search } from "lucide-react";
+import { ChevronLeft, Plus, Route, Search } from "lucide-react";
 import { getNotes, createNote } from "~/lib/notes";
 import { useState, useMemo } from "react";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import { isToday, isYesterday, format } from "date-fns";
 import { pipe, groupBy, mapValues } from "remeda";
-
-export async function clientLoader() {
-  const notes = await getNotes();
-  return { notes };
-}
+import { createRootRoute } from "@tanstack/react-router";
+import { RootRoute } from "~/root";
 
 const getDateGroupKey = (date: Date): string => {
-  console.log(date);
   if (isToday(date)) return "Today";
   if (isYesterday(date)) return "Yesterday";
 
   return format(date, "MMMM d, yyyy");
 };
 
-export default function Layout({
-  loaderData: { notes: initialNotes },
-}: {
-  loaderData: Awaited<ReturnType<typeof clientLoader>>;
-}) {
+export const LayoutRoute = createRoute({
+  getParentRoute: () => RootRoute,
+  path: "/",
+  component: Layout,
+  loader: async () => {
+    const notes = await getNotes();
+    return { notes };
+  },
+});
+
+function Layout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
+  const router = useRouter();
+  const { notes: initialNotes } = LayoutRoute.useLoaderData();
   const notes = useLiveQuery(getNotes, [], initialNotes);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -62,7 +72,7 @@ export default function Layout({
   const handleNewNote = async () => {
     const id = await createNote();
     if (typeof id === "number") {
-      navigate(`/note/${id}`);
+      navigate({ to: "/note/$noteId", params: { noteId: id.toString() } });
     }
   };
 
@@ -72,12 +82,12 @@ export default function Layout({
         {/* Left Sidebar Card */}
         <Card className="w-80 flex flex-col overflow-y-auto">
           <div className="flex items-center justify-between p-4 border-b">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 text-content-primary">
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8"
-                onClick={() => navigate("/")}
+                onClick={() => navigate({ to: "/" })}
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
@@ -118,9 +128,14 @@ export default function Layout({
                       {notes.map((note) => (
                         <NavigationMenu.Item key={note.id}>
                           <NavigationMenu.Link asChild>
-                            <NavLink
-                              to={`/note/${note.id}`}
-                              className="block w-full justify-start px-4 py-2 h-auto text-content-primary hover:text-foreground aria-[current=page]:text-foreground aria-[current=page]:bg-on-surface-secondary transition-colors hover:bg-on-surface-secondary rounded-md"
+                            <Link
+                              to="/note/$noteId"
+                              params={{ noteId: note.id.toString() }}
+                              className="block w-full justify-start px-4 py-2 h-auto text-content-primary hover:text-foreground transition-colors hover:bg-on-surface-secondary rounded-md"
+                              activeProps={{
+                                className:
+                                  "text-foreground bg-on-surface-secondary",
+                              }}
                             >
                               <div className="w-full text-left">
                                 <div className="font-medium truncate">
@@ -130,7 +145,7 @@ export default function Layout({
                                   {format(note.createdAt, "h:mm a")}
                                 </div>
                               </div>
-                            </NavLink>
+                            </Link>
                           </NavigationMenu.Link>
                         </NavigationMenu.Item>
                       ))}

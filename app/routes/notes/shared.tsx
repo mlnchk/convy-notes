@@ -1,13 +1,19 @@
-import { useParams } from "react-router";
 import { Button } from "~/components/ui/button";
 import { RichTextEditor } from "~/components/rich-text-editor";
 import { Copy, FileText } from "lucide-react";
 import { createNote } from "~/lib/notes";
-import { useNavigate } from "react-router";
 import { decodeNote, type ShareableNote } from "~/lib/sharing";
+import { createRoute, useNavigate } from "@tanstack/react-router";
+import { LayoutRoute } from "~/routes/layout";
 
-export default function SharedNote() {
-  const { encodedNote } = useParams();
+const Route = createRoute({
+  getParentRoute: () => LayoutRoute,
+  path: "/shared/$encodedNote",
+  component: SharedNote,
+});
+
+function SharedNote() {
+  const { encodedNote } = Route.useParams();
   const navigate = useNavigate();
 
   if (!encodedNote) {
@@ -48,18 +54,18 @@ export default function SharedNote() {
     });
 
     if (typeof id === "number") {
-      navigate(`/note/${id}`);
+      navigate({ to: "/note/$noteId", params: { noteId: id.toString() } });
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto h-full flex flex-col">
+    <div className="max-w-2xl py-20 px-5 mx-auto flex flex-col">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-4xl font-bold">
+        <h1 className="text-4xl font-bold text-content-primary">
           {decodedNote.title || "Untitled"}
         </h1>
         <Button onClick={handleCopyNote}>
-          <Copy className="h-4 w-4 mr-2" />
+          <Copy className="h-4 w-4 mr-2 text-content-primary" />
           Make a Copy
         </Button>
       </div>
@@ -72,3 +78,5 @@ export default function SharedNote() {
     </div>
   );
 }
+
+export default Route;

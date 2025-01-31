@@ -1,25 +1,30 @@
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Button } from "~/components/ui/button";
-import { FileText, Trash2, Plus, Share2 } from "lucide-react";
+import { FileText, Trash2, Plus, Share2, Route } from "lucide-react";
 import { db } from "~/lib/db";
 import { createNote } from "~/lib/notes";
 import { RichTextEditor } from "~/components/rich-text-editor";
 import { encodeNote, createShareUrl } from "~/lib/sharing";
 import { useState } from "react";
+import { createRoute } from "@tanstack/react-router";
+import { LayoutRoute } from "~/routes/layout";
 
-export async function clientLoader({ params }: { params: { noteId: string } }) {
-  const note = await db.notes.get(Number(params.noteId));
-  return { note };
-}
+export const NoteRoute = createRoute({
+  getParentRoute: () => LayoutRoute,
+  path: "/note/$noteId",
+  loader: async ({ params: { noteId } }) => {
+    const note = await db.notes.get(Number(noteId));
+    return { note };
+  },
+  component: Note,
+});
 
-export default function Note({
-  loaderData: { note: initialNote },
-}: {
-  loaderData: Awaited<ReturnType<typeof clientLoader>>;
-}) {
+function Note() {
   const navigate = useNavigate();
-  const { noteId } = useParams();
+  const router = useRouter();
+  const { noteId } = NoteRoute.useParams();
+  const { note: initialNote } = NoteRoute.useLoaderData();
 
   const currentNote = useLiveQuery(
     async () => {
@@ -33,7 +38,7 @@ export default function Note({
   const handleNewNote = async () => {
     const id = await createNote();
     if (typeof id === "number") {
-      navigate(`/note/${id}`);
+      navigate({ to: "/note/$noteId", params: { noteId: id.toString() } });
     }
   };
 
@@ -59,7 +64,7 @@ export default function Note({
 
     if (window.confirm("Are you sure you want to delete this note?")) {
       await db.notes.delete(Number(noteId));
-      navigate("/");
+      navigate({ to: "/" });
     }
   };
 
@@ -107,7 +112,7 @@ export default function Note({
           placeholder="Add Title"
           value={currentNote.title}
           onChange={(e) => handleNoteChange("title", e.target.value)}
-          className="text-4xl font-bold bg-transparent border-none outline-none placeholder:text-on-surface-primary"
+          className="text-4xl font-bold bg-transparent border-none outline-none placeholder:text-on-surface-primary text-content-primary"
         />
         <div className="flex gap-2">
           <Button

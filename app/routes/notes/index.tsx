@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { Button } from "~/components/ui/button";
 import { FileText, Plus } from "lucide-react";
 import { createNote } from "~/lib/notes";
@@ -9,7 +9,7 @@ export default function NotesIndex() {
   const handleNewNote = async () => {
     const id = await createNote();
     if (typeof id === "number") {
-      navigate(`/note/${id}`);
+      navigate({ to: "/note/$noteId", params: { noteId: id.toString() } });
     }
   };
 
