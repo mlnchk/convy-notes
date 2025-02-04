@@ -1,24 +1,28 @@
 import { pipeline } from "@huggingface/transformers";
 
-export async function summarizeText(text: string) {
-  try {
-    console.log("text", text);
-
-    const summarizePipeline = await pipeline(
-      "summarization",
-      "Xenova/bart-large-cnn",
+export async function summarizeText(text: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const worker = new Worker(
+      new URL("../workers/summarize.worker.ts", import.meta.url),
+      { type: "module" },
     );
 
-    const result = await summarizePipeline(text);
+    worker.onmessage = (event) => {
+      const { success, summary, error } = event.data;
+      worker.terminate();
 
-    console.log("result", result);
+      if (success) {
+        resolve(summary);
+      } else {
+        reject(new Error(error));
+      }
+    };
 
-    // @ts-ignore
-    return result[0].summary_text;
-  } catch (error) {
-    console.error("Error summarizing text:", error);
-    throw new Error(
-      "Failed to summarize text. Please make sure the text is not too long.",
-    );
-  }
+    worker.onerror = (error) => {
+      worker.terminate();
+      reject(new Error("Failed to initialize summarization worker."));
+    };
+
+    worker.postMessage(text);
+  });
 }
