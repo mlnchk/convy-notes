@@ -9,6 +9,7 @@
     "generate-pwa-assets": "node scripts/generate-pwa-assets.js"
   },
   "dependencies": {
+    "@huggingface/transformers": "^3.3.2",
     "@radix-ui/react-navigation-menu": "^1.2.3",
     "@radix-ui/react-slot": "^1.1.1",
     "@tanstack/react-router": "^1.98.4",

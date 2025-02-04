@@ -9,6 +9,7 @@ import { encodeNote, createShareUrl } from "~/lib/sharing";
 import { useState } from "react";
 import { createRoute } from "@tanstack/react-router";
 import { LayoutRoute } from "~/routes/layout";
+import { SummarizeButton } from "~/components/summarize-button";
 
 export const NoteRoute = createRoute({
   getParentRoute: () => LayoutRoute,
@@ -84,6 +85,26 @@ function Note() {
     });
   };
 
+  const handleSummarize = async (summary: string) => {
+    if (!noteId || !currentNote) return;
+
+    try {
+      const summaryNoteId = await createNote({
+        title: `${currentNote.title || "Untitled"} - Summary`,
+        content: summary,
+      });
+
+      if (typeof summaryNoteId === "number") {
+        navigate({
+          to: "/note/$noteId",
+          params: { noteId: summaryNoteId.toString() },
+        });
+      }
+    } catch (error) {
+      console.error("Failed to create summary note:", error);
+    }
+  };
+
   if (!currentNote) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-8">
@@ -115,6 +136,10 @@ function Note() {
           className="text-4xl font-bold bg-transparent border-none outline-none placeholder:text-on-surface-primary text-content-primary"
         />
         <div className="flex gap-2">
+          <SummarizeButton
+            content={currentNote.content}
+            onSummarize={handleSummarize}
+          />
           <Button
             variant="ghost"
             size="icon"
